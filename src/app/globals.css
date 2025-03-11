@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 245, 230, 232;
+  --background-start-rgb: 25, 42, 81;
+  --background-end-rgb: 150, 122, 161;
+}
+
+@layer base {
+  body {
+    @apply bg-gradient-to-b from-space-cadet to-mountbatten text-lavender-blush min-h-screen;
+  }
+}
+
+@layer components {
+  .card-hover {
+    @apply transition-all duration-300 hover:transform hover:scale-[1.02] hover:shadow-2xl;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-thistle to-rose-quartz;
+  }
+
+  .glass-effect {
+    @apply bg-lavender-blush/5 backdrop-blur-sm;
+  }
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+} 
