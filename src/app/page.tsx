@@ -6,14 +6,14 @@ export default function Home() {
       name: "Star Wars Text Scroller",
       description: "An AI-assisted recreation of the iconic Star Wars Episode IV opening crawl. Features the original 'A New Hope' text with authentic scrolling animation and star field background.",
       tech: ["HTML", "CSS", "JavaScript", "AI"],
-      thumbnail: "/star-wars-scroller.png",
+      thumbnail: "/github-landing-page/star-wars-scroller.png",
       link: "https://cunya.github.io/StarWarsScroller/"
     },
     {
       name: "Retro Rasterbars",
       description: "A nostalgic demo effect crafted with AI assistance, featuring smooth animated rasterbars that pay homage to the classic demoscene aesthetic. Experience real-time WebGL rendering.",
       tech: ["Canvas", "JavaScript", "WebGL", "AI"],
-      thumbnail: "/rasterbars.png",
+      thumbnail: "/github-landing-page/rasterbars.png",
       link: "https://cunya.github.io/Rasterbars/"
     }
   ];
