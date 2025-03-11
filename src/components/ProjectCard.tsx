@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface ProjectCardProps {
   name: string;
@@ -17,9 +18,10 @@ export default function ProjectCard({ name, description, tech, thumbnail, link }
       <div className="bg-space-cadet/60 backdrop-blur-sm rounded-xl overflow-hidden card-hover border border-mountbatten/50">
         <div className="relative w-full pt-[56.25%] overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-thistle/10 to-rose-quartz/10 group-hover:opacity-50 transition-opacity z-10" />
-          <img
+          <Image
             src={thumbnail}
             alt={`${name} thumbnail`}
+            fill
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         </div>
