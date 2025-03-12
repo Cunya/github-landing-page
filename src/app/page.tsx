@@ -2,26 +2,29 @@ import ProjectCard from '@/components/ProjectCard';
 import GridBackground from '@/components/GridBackground';
 
 export default function Home() {
+  // Determine the base path based on environment
+  const basePath = process.env.NODE_ENV === 'production' ? '/github-landing-page' : '';
+  
   const projects = [
     {
       name: "Star Wars Text Scroller",
       description: "A recreation of the Star Wars Episode IV opening crawl with scrolling text and a starfield background. Implements the classic cinematic effect with CSS 3D transforms.",
       tech: ["HTML", "CSS", "JavaScript", "AI"],
-      thumbnail: "/github-landing-page/star-wars-scroller.png",
+      thumbnail: `${basePath}/star-wars-scroller.png`,
       link: "https://cunya.github.io/StarWarsScroller/"
     },
     {
       name: "Retro Rasterbars",
       description: "A tribute to classic demoscene effects featuring animated color bars. Implements the visual technique using modern web technologies while maintaining the nostalgic aesthetic.",
       tech: ["Canvas", "JavaScript", "WebGL", "AI"],
-      thumbnail: "/github-landing-page/rasterbars.png",
+      thumbnail: `${basePath}/rasterbars.png`,
       link: "https://cunya.github.io/Rasterbars/"
     },
     {
       name: "Flame Shader",
       description: "A WebGL implementation of a fire effect using fragment shaders. Simulates flame dynamics with customizable parameters for an interactive experience.",
       tech: ["WebGL", "GLSL", "JavaScript", "AI"],
-      thumbnail: "/github-landing-page/flame-shader.png",
+      thumbnail: `${basePath}/flame-shader.png`,
       link: "https://cunya.github.io/FlameShader/"
     }
   ];

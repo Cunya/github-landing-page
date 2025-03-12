@@ -4,8 +4,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: '/github-landing-page',
-  assetPrefix: '/github-landing-page',
+  basePath: process.env.NODE_ENV === 'production' ? '/github-landing-page' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/github-landing-page' : '',
 }
 
 module.exports = nextConfig 
