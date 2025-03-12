@@ -9,13 +9,42 @@ import * as THREE from 'three';
 function DistortedGrid() {
   const gridRef = useRef<THREE.Mesh>(null);
   const sphereRef = useRef<THREE.Mesh>(null);
-  const { viewport } = useThree();
+  const { viewport, size, camera, raycaster } = useThree();
+  const [mousePosition, setMousePosition] = useState(new THREE.Vector3(0, 0, 0));
+  
+  // Track mouse position with raycasting for accurate world coordinates
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      // Convert mouse position to normalized coordinates (-1 to 1)
+      const x = (event.clientX / size.width) * 2 - 1;
+      const y = -(event.clientY / size.height) * 2 + 1;
+      
+      // Use raycasting to convert screen coordinates to world coordinates
+      const mouse = new THREE.Vector2(x, y);
+      raycaster.setFromCamera(mouse, camera);
+      
+      // Create a plane at z=-10 (same as our grid) to intersect with
+      const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 10);
+      const intersectionPoint = new THREE.Vector3();
+      
+      // Find the intersection point
+      raycaster.ray.intersectPlane(plane, intersectionPoint);
+      
+      // Update mouse position state with the world coordinates
+      setMousePosition(intersectionPoint);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [size, camera, raycaster]);
   
   // Create grid geometry
   const geometry = useMemo(() => {
     // Calculate size based on viewport to ensure it covers the screen
     const aspectRatio = viewport.width / viewport.height;
-    const size = Math.max(50, 40 * Math.max(1, aspectRatio));
+    const size = Math.max(120, 100 * Math.max(1, aspectRatio));
     const divisions = 60;
     const geometry = new THREE.PlaneGeometry(size, size, divisions, divisions);
     return geometry;
@@ -26,9 +55,9 @@ function DistortedGrid() {
     return new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 0 },
-        spherePosition: { value: new THREE.Vector3(0, 0, 8) },
-        sphereRadius: { value: 15.0 },
-        distortionStrength: { value: 7.0 }
+        spherePosition: { value: new THREE.Vector3(0, 0, 0) },
+        sphereRadius: { value: 30.0 },
+        distortionStrength: { value: 8.0 }
       },
       vertexShader: `
         uniform float time;
@@ -46,13 +75,17 @@ function DistortedGrid() {
           vec3 pos = position;
           float dist = distance(pos, spherePosition);
           
-          // Apply distortion based on distance
+          // Apply distortion based on distance - very simple push effect
           float distortionFactor = 0.0;
           if (dist < sphereRadius) {
-            float strength = (1.0 - dist / sphereRadius) * distortionStrength;
+            // Simple linear falloff for clean push effect
+            float normalizedDist = dist / sphereRadius;
+            float falloff = max(0.0, 1.0 - normalizedDist);
+            
+            // Push vertices away from sphere center
             vec3 dir = normalize(pos - spherePosition);
-            pos -= dir * strength;
-            distortionFactor = strength / distortionStrength; // Normalize to 0-1
+            pos += dir * falloff * distortionStrength;
+            distortionFactor = falloff;
           }
           
           vDistortion = distortionFactor;
@@ -67,7 +100,7 @@ function DistortedGrid() {
           // Grid pattern
           float gridSize = 80.0; // More grid lines
           vec2 grid = fract(vUv * gridSize);
-          float lineWidth = 0.01; // Thinner lines
+          float lineWidth = 0.03; // Thicker lines
           
           // Create grid lines
           float line = step(1.0 - lineWidth, grid.x) + step(1.0 - lineWidth, grid.y);
@@ -84,7 +117,7 @@ function DistortedGrid() {
           vec3 color = mix(baseColor, lineColor, line);
           
           // Add glow effect in distorted areas
-          float glow = vDistortion * 0.4;
+          float glow = vDistortion * 0.5;
           color += vec3(0.3, 0.1, 0.5) * glow;
           
           gl_FragColor = vec4(color, 0.7); // More opaque
@@ -95,7 +128,7 @@ function DistortedGrid() {
     });
   }, []);
 
-  // Animation
+  // Animation - using precise world coordinates from raycasting
   useFrame(({ clock }) => {
     if (gridRef.current && gridRef.current.material) {
       const time = clock.getElapsedTime();
@@ -103,16 +136,11 @@ function DistortedGrid() {
       // Update time uniform
       (gridRef.current.material as THREE.ShaderMaterial).uniforms.time.value = time;
       
-      // Move sphere position for dynamic effect - slower, more dramatic movement
-      const spherePos = new THREE.Vector3(
-        Math.sin(time * 0.1) * 8,
-        Math.cos(time * 0.08) * 8,
-        8 + Math.sin(time * 0.05) * 3.0
-      );
-      (gridRef.current.material as THREE.ShaderMaterial).uniforms.spherePosition.value = spherePos;
+      // Use the exact world coordinates from raycasting
+      (gridRef.current.material as THREE.ShaderMaterial).uniforms.spherePosition.value = mousePosition;
       
       if (sphereRef.current) {
-        sphereRef.current.position.copy(spherePos);
+        sphereRef.current.position.copy(mousePosition);
       }
     }
   });
@@ -120,10 +148,10 @@ function DistortedGrid() {
   return (
     <>
       {/* Grid is vertical and positioned to fill the screen */}
-      <mesh ref={gridRef} geometry={geometry} material={material} position={[0, 0, -15]}>
+      <mesh ref={gridRef} geometry={geometry} material={material} position={[0, 0, -10]}>
       </mesh>
-      <mesh ref={sphereRef} position={[0, 0, 8]} visible={false}>
-        <sphereGeometry args={[15.0, 32, 32]} />
+      <mesh ref={sphereRef} position={[0, 0, 0]} visible={false}>
+        <sphereGeometry args={[30.0, 32, 32]} />
         <meshBasicMaterial color="purple" wireframe />
       </mesh>
     </>
@@ -159,7 +187,7 @@ export default function GridBackground() {
   return (
     <div className="fixed inset-0 -z-10 w-screen h-screen overflow-hidden">
       <Canvas 
-        camera={{ position: [0, 0, 20], fov: 75 }}
+        camera={{ position: [0, 0, 20], fov: 100 }}
         style={{ width: '100vw', height: '100vh' }}
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 2]} // Responsive pixel ratio
