@@ -1,4 +1,5 @@
 import ProjectCard from '@/components/ProjectCard';
+import GridBackground from '@/components/GridBackground';
 
 export default function Home() {
   const projects = [
@@ -27,6 +28,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 relative">
+      {/* Three.js Grid Background */}
+      <GridBackground />
+      
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 space-y-4">
           <h1 className="text-5xl font-bold tracking-tight text-lavender-blush">
@@ -49,12 +53,6 @@ export default function Home() {
             />
           ))}
         </div>
-      </div>
-      
-      {/* Decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-thistle/30 rounded-full filter blur-3xl animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rose-quartz/30 rounded-full filter blur-3xl animate-float-delayed" />
       </div>
     </main>
   );
