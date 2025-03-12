@@ -4,21 +4,21 @@ export default function Home() {
   const projects = [
     {
       name: "Star Wars Text Scroller",
-      description: "An AI-assisted recreation of the iconic Star Wars Episode IV opening crawl. Features the original 'A New Hope' text with authentic scrolling animation and star field background.",
+      description: "A recreation of the Star Wars Episode IV opening crawl with scrolling text and a starfield background. Implements the classic cinematic effect with CSS 3D transforms.",
       tech: ["HTML", "CSS", "JavaScript", "AI"],
       thumbnail: "/github-landing-page/star-wars-scroller.png",
       link: "https://cunya.github.io/StarWarsScroller/"
     },
     {
       name: "Retro Rasterbars",
-      description: "A nostalgic demo effect crafted with AI assistance, featuring smooth animated rasterbars that pay homage to the classic demoscene aesthetic. Experience real-time WebGL rendering.",
+      description: "A tribute to classic demoscene effects featuring animated color bars. Implements the visual technique using modern web technologies while maintaining the nostalgic aesthetic.",
       tech: ["Canvas", "JavaScript", "WebGL", "AI"],
       thumbnail: "/github-landing-page/rasterbars.png",
       link: "https://cunya.github.io/Rasterbars/"
     },
     {
       name: "Flame Shader",
-      description: "An AI-enhanced WebGL flame effect that simulates realistic fire dynamics. Features interactive controls and real-time rendering with fragment shaders for a mesmerizing visual experience.",
+      description: "A WebGL implementation of a fire effect using fragment shaders. Simulates flame dynamics with customizable parameters for an interactive experience.",
       tech: ["WebGL", "GLSL", "JavaScript", "AI"],
       thumbnail: "/github-landing-page/flame-shader.png",
       link: "https://cunya.github.io/FlameShader/"
@@ -30,10 +30,10 @@ export default function Home() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 space-y-4">
           <h1 className="text-5xl font-bold tracking-tight text-lavender-blush">
-            AI-Enhanced Demo Effects
+            Demo Effects Collection
           </h1>
           <p className="text-xl text-lavender-blush max-w-2xl mx-auto">
-            Explore my collection of classic demo effects reimagined through AI collaboration, combining retro aesthetics with modern web technologies
+            A selection of classic demo effects implemented with modern web technologies and AI assistance
           </p>
         </div>
         

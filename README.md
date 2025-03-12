@@ -1,34 +1,34 @@
-# AI-Enhanced Demo Effects Portfolio
+# Demo Effects Collection
 
-A modern, responsive portfolio showcasing AI-assisted demo effects and retro-inspired web projects. Built with Next.js and Tailwind CSS.
+A portfolio of classic demo effects implemented with Next.js and Tailwind CSS.
 
 ## 🚀 Live Demo
 
-Visit the live site: [AI-Enhanced Demo Effects](https://cunya.github.io/github-landing-page/)
+Visit the site: [Demo Effects Collection](https://cunya.github.io/github-landing-page/)
 
 ## 📋 Project Overview
 
-This portfolio showcases a collection of classic demo effects reimagined through AI collaboration, combining retro aesthetics with modern web technologies. The site features:
+This portfolio presents a collection of classic demo effects implemented with modern web technologies. The site features:
 
-- Responsive design that works on mobile, tablet, and desktop
-- Beautiful UI with custom animations and glass-morphism effects
-- Project cards with hover effects and tech stack tags
+- Responsive design for mobile, tablet, and desktop
+- Custom animations and glass-morphism effects
+- Project cards with hover effects
 - Optimized images and performance
 
 ## 🎮 Featured Projects
 
 ### Star Wars Text Scroller
-An AI-assisted recreation of the iconic Star Wars Episode IV opening crawl, featuring the original 'A New Hope' text with authentic scrolling animation and star field background.
+A recreation of the Star Wars Episode IV opening crawl with scrolling text and a starfield background.
 - [Live Demo](https://cunya.github.io/StarWarsScroller/)
 - Technologies: HTML, CSS, JavaScript, AI
 
 ### Retro Rasterbars
-A nostalgic demo effect crafted with AI assistance, featuring smooth animated rasterbars that pay homage to the classic demoscene aesthetic with real-time WebGL rendering.
+A tribute to classic demoscene effects featuring animated color bars implemented with modern web technologies.
 - [Live Demo](https://cunya.github.io/Rasterbars/)
 - Technologies: Canvas, JavaScript, WebGL, AI
 
 ### Flame Shader
-An AI-enhanced WebGL flame effect that simulates realistic fire dynamics with interactive controls and real-time rendering using fragment shaders.
+A WebGL implementation of a fire effect using fragment shaders with customizable parameters.
 - [Live Demo](https://cunya.github.io/FlameShader/)
 - Technologies: WebGL, GLSL, JavaScript, AI
 
@@ -91,4 +91,4 @@ This project is open source and available under the MIT License.
 
 ---
 
-Created with ❤️ and AI assistance 
+Created with AI assistance 
