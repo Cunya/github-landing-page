@@ -56,8 +56,8 @@ function DistortedGrid() {
       uniforms: {
         time: { value: 0 },
         spherePosition: { value: new THREE.Vector3(0, 0, 0) },
-        sphereRadius: { value: 30.0 },
-        distortionStrength: { value: 8.0 }
+        sphereRadius: { value: 100.0 },
+        distortionStrength: { value: 4.0 }
       },
       vertexShader: `
         uniform float time;
@@ -151,7 +151,7 @@ function DistortedGrid() {
       <mesh ref={gridRef} geometry={geometry} material={material} position={[0, 0, -10]}>
       </mesh>
       <mesh ref={sphereRef} position={[0, 0, 0]} visible={false}>
-        <sphereGeometry args={[30.0, 32, 32]} />
+        <sphereGeometry args={[100.0, 32, 32]} />
         <meshBasicMaterial color="purple" wireframe />
       </mesh>
     </>
