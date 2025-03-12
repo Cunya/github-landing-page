@@ -1,7 +1,7 @@
 'use client';
 
-import { useRef, useMemo, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useRef, useMemo, useEffect, useState } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -9,23 +9,26 @@ import * as THREE from 'three';
 function DistortedGrid() {
   const gridRef = useRef<THREE.Mesh>(null);
   const sphereRef = useRef<THREE.Mesh>(null);
+  const { viewport } = useThree();
   
   // Create grid geometry
   const geometry = useMemo(() => {
-    const size = 25; // Even larger size
-    const divisions = 50; // More divisions for smoother effect
+    // Calculate size based on viewport to ensure it covers the screen
+    const aspectRatio = viewport.width / viewport.height;
+    const size = Math.max(50, 40 * Math.max(1, aspectRatio));
+    const divisions = 60;
     const geometry = new THREE.PlaneGeometry(size, size, divisions, divisions);
     return geometry;
-  }, []);
+  }, [viewport]);
 
   // Create shader material
   const material = useMemo(() => {
     return new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 0 },
-        spherePosition: { value: new THREE.Vector3(0, 0, 8) }, // Moved further back
-        sphereRadius: { value: 12.0 }, // Even larger radius
-        distortionStrength: { value: 6.0 } // Stronger distortion
+        spherePosition: { value: new THREE.Vector3(0, 0, 8) },
+        sphereRadius: { value: 15.0 },
+        distortionStrength: { value: 7.0 }
       },
       vertexShader: `
         uniform float time;
@@ -62,9 +65,9 @@ function DistortedGrid() {
         
         void main() {
           // Grid pattern
-          float gridSize = 70.0; // More grid lines
+          float gridSize = 80.0; // More grid lines
           vec2 grid = fract(vUv * gridSize);
-          float lineWidth = 0.012; // Thinner lines
+          float lineWidth = 0.01; // Thinner lines
           
           // Create grid lines
           float line = step(1.0 - lineWidth, grid.x) + step(1.0 - lineWidth, grid.y);
@@ -102,9 +105,9 @@ function DistortedGrid() {
       
       // Move sphere position for dynamic effect - slower, more dramatic movement
       const spherePos = new THREE.Vector3(
-        Math.sin(time * 0.1) * 5,
-        Math.cos(time * 0.08) * 5,
-        8 + Math.sin(time * 0.05) * 2.0
+        Math.sin(time * 0.1) * 8,
+        Math.cos(time * 0.08) * 8,
+        8 + Math.sin(time * 0.05) * 3.0
       );
       (gridRef.current.material as THREE.ShaderMaterial).uniforms.spherePosition.value = spherePos;
       
@@ -116,11 +119,11 @@ function DistortedGrid() {
 
   return (
     <>
-      {/* Grid is vertical and positioned further back */}
-      <mesh ref={gridRef} geometry={geometry} material={material} position={[0, 0, -10]}>
+      {/* Grid is vertical and positioned to fill the screen */}
+      <mesh ref={gridRef} geometry={geometry} material={material} position={[0, 0, -15]}>
       </mesh>
       <mesh ref={sphereRef} position={[0, 0, 8]} visible={false}>
-        <sphereGeometry args={[12.0, 32, 32]} />
+        <sphereGeometry args={[15.0, 32, 32]} />
         <meshBasicMaterial color="purple" wireframe />
       </mesh>
     </>
@@ -128,9 +131,39 @@ function DistortedGrid() {
 }
 
 export default function GridBackground() {
+  // Track window size for responsive canvas
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 0,
+    height: typeof window !== 'undefined' ? window.innerHeight : 0,
+  });
+
+  useEffect(() => {
+    // Handle window resize
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+    
+    // Remove event listener on cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <div className="fixed inset-0 -z-10">
-      <Canvas camera={{ position: [0, 0, 15], fov: 70 }}>
+    <div className="fixed inset-0 -z-10 w-screen h-screen overflow-hidden">
+      <Canvas 
+        camera={{ position: [0, 0, 20], fov: 75 }}
+        style={{ width: '100vw', height: '100vh' }}
+        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 2]} // Responsive pixel ratio
+      >
         <ambientLight intensity={0.5} />
         <DistortedGrid />
         <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
