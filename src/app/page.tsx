@@ -15,6 +15,13 @@ export default function Home() {
       tech: ["Canvas", "JavaScript", "WebGL", "AI"],
       thumbnail: "/github-landing-page/rasterbars.png",
       link: "https://cunya.github.io/Rasterbars/"
+    },
+    {
+      name: "Flame Shader",
+      description: "An AI-enhanced WebGL flame effect that simulates realistic fire dynamics. Features interactive controls and real-time rendering with fragment shaders for a mesmerizing visual experience.",
+      tech: ["WebGL", "GLSL", "JavaScript", "AI"],
+      thumbnail: "/github-landing-page/flame-shader.png",
+      link: "https://cunya.github.io/FlameShader/"
     }
   ];
 
@@ -30,7 +37,7 @@ export default function Home() {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project) => (
             <ProjectCard
               key={project.name}

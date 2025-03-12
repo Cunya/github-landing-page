@@ -1,0 +1,5 @@
+Please add a screenshot of the Flame Shader project here and rename this file to flame-shader.png
+
+The image should be similar in size and aspect ratio to the other project images (rasterbars.png and star-wars-scroller.png).
+
+Until you add the actual image, the project card will show a broken image placeholder. 
