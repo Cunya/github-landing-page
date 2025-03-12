@@ -5,8 +5,8 @@ import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'GitHub Projects - Tamás Martinec',
-  description: 'A showcase of my GitHub projects and coding experiments.',
+  title: 'LLM Assisted Programming Projects - Tamás Martinec',
+  description: 'A showcase of LLM assisted programming projects and coding experiments.',
   icons: {
     icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">👨‍💻</text></svg>'
   }

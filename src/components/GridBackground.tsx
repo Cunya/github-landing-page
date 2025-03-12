@@ -10,42 +10,22 @@ function DistortedGrid() {
   const gridRef = useRef<THREE.Mesh>(null);
   const sphereRef = useRef<THREE.Mesh>(null);
   const { viewport, size, camera, raycaster } = useThree();
-  const [mousePosition, setMousePosition] = useState(new THREE.Vector3(0, 0, 0));
+  // Always keep the initial animation active
+  const initialAnimationRef = useRef({ progress: 1.0 });
+  const [isPointerOnScreen, setIsPointerOnScreen] = useState(false);
+  const mousePosition = useRef(new THREE.Vector3(0, 0, 0));
+  const targetPosition = useRef(new THREE.Vector3(0, 0, 0));
   
-  // Track mouse position with raycasting for accurate world coordinates
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      // Convert mouse position to normalized coordinates (-1 to 1)
-      const x = (event.clientX / size.width) * 2 - 1;
-      const y = -(event.clientY / size.height) * 2 + 1;
-      
-      // Use raycasting to convert screen coordinates to world coordinates
-      const mouse = new THREE.Vector2(x, y);
-      raycaster.setFromCamera(mouse, camera);
-      
-      // Create a plane at z=-10 (same as our grid) to intersect with
-      const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 10);
-      const intersectionPoint = new THREE.Vector3();
-      
-      // Find the intersection point
-      raycaster.ray.intersectPlane(plane, intersectionPoint);
-      
-      // Update mouse position state with the world coordinates
-      setMousePosition(intersectionPoint);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [size, camera, raycaster]);
-  
-  // Create grid geometry
+  // Create grid geometry with performance optimizations
   const geometry = useMemo(() => {
     // Calculate size based on viewport to ensure it covers the screen
     const aspectRatio = viewport.width / viewport.height;
     const size = Math.max(120, 100 * Math.max(1, aspectRatio));
-    const divisions = 60;
+    
+    // Adjust divisions based on device performance (fewer for mobile)
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const divisions = isMobile ? 40 : 60;
+    
     const geometry = new THREE.PlaneGeometry(size, size, divisions, divisions);
     return geometry;
   }, [viewport]);
@@ -57,13 +37,15 @@ function DistortedGrid() {
         time: { value: 0 },
         spherePosition: { value: new THREE.Vector3(0, 0, 0) },
         sphereRadius: { value: 100.0 },
-        distortionStrength: { value: 4.0 }
+        distortionStrength: { value: 4.0 },
+        initialAnimationProgress: { value: 1.0 } // Always at full strength
       },
       vertexShader: `
         uniform float time;
         uniform vec3 spherePosition;
         uniform float sphereRadius;
         uniform float distortionStrength;
+        uniform float initialAnimationProgress;
         
         varying vec2 vUv;
         varying float vDistortion;
@@ -71,12 +53,20 @@ function DistortedGrid() {
         void main() {
           vUv = uv;
           
-          // Calculate distance from vertex to sphere center
+          // Apply initial animation effect - subtle wave pattern
+          // Always apply the wave pattern regardless of interaction
           vec3 pos = position;
+          float waveX = sin(pos.x * 0.03 + time * 0.5) * 1.0;
+          float waveY = cos(pos.y * 0.03 + time * 0.5) * 1.0;
+          pos.z += waveX + waveY;
+          
+          // Initialize distortion factor with a subtle base from the wave
+          float distortionFactor = 0.2 * (waveX + waveY + 2.0) / 4.0;
+          
+          // Calculate distance from vertex to sphere center
           float dist = distance(pos, spherePosition);
           
-          // Apply distortion based on distance - very simple push effect
-          float distortionFactor = 0.0;
+          // Apply additional distortion based on distance - push effect
           if (dist < sphereRadius) {
             // Simple linear falloff for clean push effect
             float normalizedDist = dist / sphereRadius;
@@ -85,7 +75,9 @@ function DistortedGrid() {
             // Push vertices away from sphere center
             vec3 dir = normalize(pos - spherePosition);
             pos += dir * falloff * distortionStrength;
-            distortionFactor = falloff;
+            
+            // Enhance distortion factor where the sphere is
+            distortionFactor = max(distortionFactor, falloff);
           }
           
           vDistortion = distortionFactor;
@@ -128,19 +120,80 @@ function DistortedGrid() {
     });
   }, []);
 
-  // Animation - using precise world coordinates from raycasting
+  // Track mouse position with raycasting for accurate world coordinates
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setIsPointerOnScreen(true);
+      
+      // Convert mouse position to normalized coordinates (-1 to 1)
+      const x = (event.clientX / size.width) * 2 - 1;
+      const y = -(event.clientY / size.height) * 2 + 1;
+
+      // Use raycasting to convert screen coordinates to world coordinates
+      const mouseCoords = new THREE.Vector2(x, y);
+      raycaster.setFromCamera(mouseCoords, camera);
+
+      // Create a plane at z=10 to intersect with
+      const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 10);
+      const intersectionPoint = new THREE.Vector3();
+
+      // Find the intersection point
+      if (raycaster.ray.intersectPlane(plane, intersectionPoint)) {
+        // Update target position with the world coordinates
+        targetPosition.current.copy(intersectionPoint);
+      }
+    };
+    
+    // Use document instead of window for more reliable mouseleave detection
+    const handleMouseLeave = () => {
+      setIsPointerOnScreen(false);
+    };
+    
+    // Check if mouse is outside viewport bounds
+    const checkMouseBounds = (event: MouseEvent) => {
+      const { clientX, clientY } = event;
+      const { innerWidth, innerHeight } = window;
+      
+      // If mouse is at the edge of the viewport, consider it "left"
+      if (clientX <= 0 || clientY <= 0 || clientX >= innerWidth || clientY >= innerHeight) {
+        setIsPointerOnScreen(false);
+      }
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('mousemove', checkMouseBounds);
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mousemove', checkMouseBounds);
+    };
+  }, [camera, raycaster, size]);
+
+  // Animation - using precise world coordinates and initial animation
   useFrame(({ clock }) => {
     if (gridRef.current && gridRef.current.material) {
       const time = clock.getElapsedTime();
+      const material = gridRef.current.material as THREE.ShaderMaterial;
       
       // Update time uniform
-      (gridRef.current.material as THREE.ShaderMaterial).uniforms.time.value = time;
+      material.uniforms.time.value = time;
       
-      // Use the exact world coordinates from raycasting
-      (gridRef.current.material as THREE.ShaderMaterial).uniforms.spherePosition.value = mousePosition;
+      // Smoothly interpolate to target position or back to center
+      if (isPointerOnScreen) {
+        // When pointer is on screen, move toward the target position with faster lerp
+        mousePosition.current.lerp(targetPosition.current, 0.3);
+      } else {
+        // When pointer is off screen, move back to center with a slower lerp for smoother transition
+        mousePosition.current.lerp(new THREE.Vector3(0, 0, 0), 0.1);
+      }
+      
+      // Use the interpolated position
+      material.uniforms.spherePosition.value = mousePosition.current;
       
       if (sphereRef.current) {
-        sphereRef.current.position.copy(mousePosition);
+        sphereRef.current.position.copy(mousePosition.current);
       }
     }
   });
@@ -191,6 +244,7 @@ export default function GridBackground() {
         style={{ width: '100vw', height: '100vh' }}
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 2]} // Responsive pixel ratio
+        performance={{ min: 0.5 }} // Performance optimization
       >
         <ambientLight intensity={0.5} />
         <DistortedGrid />
