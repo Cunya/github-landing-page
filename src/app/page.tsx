@@ -31,12 +31,12 @@ export default function Home() {
       {/* Three.js Grid Background */}
       <GridBackground />
       
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16 space-y-4">
-          <h1 className="text-5xl font-bold tracking-tight text-lavender-blush">
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="text-center mb-16 space-y-4 backdrop-blur-sm bg-space-cadet/10 p-8 rounded-2xl">
+          <h1 className="text-5xl font-bold tracking-tight text-lavender-blush drop-shadow-lg">
             Demo Effects Collection
           </h1>
-          <p className="text-xl text-lavender-blush max-w-2xl mx-auto">
+          <p className="text-xl text-lavender-blush max-w-2xl mx-auto drop-shadow">
             A selection of classic demo effects implemented with modern web technologies and AI assistance
           </p>
         </div>
