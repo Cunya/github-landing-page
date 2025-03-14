@@ -1,0 +1,5 @@
+This is a placeholder for the 3D Text Scroll project thumbnail.
+
+Please replace this with an actual screenshot of the 3D Text Scroll project.
+The image should be in PNG format and named "3d-text-scroll.png".
+Recommended dimensions: 800x600 pixels or similar aspect ratio. 

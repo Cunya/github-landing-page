@@ -26,6 +26,13 @@ export default function Home() {
       tech: ["WebGL", "GLSL", "JavaScript", "AI"],
       thumbnail: `${basePath}/flame-shader.png`,
       link: "https://cunya.github.io/FlameShader/"
+    },
+    {
+      name: "3D Text Scroll",
+      description: "An interactive 3D text scrolling effect that creates depth and perspective. Features smooth animations and responsive design for an immersive reading experience.",
+      tech: ["Three.js", "JavaScript", "CSS", "AI"],
+      thumbnail: `${basePath}/3d-text-scroll.png`,
+      link: "https://cunya.github.io/3d-text-scroll/"
     }
   ];
 
