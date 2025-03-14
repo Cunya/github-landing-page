@@ -21,7 +21,7 @@ export default function Home() {
       link: "https://cunya.github.io/Rasterbars/"
     },
     {
-      name: "Flame Shader",
+      name: "Image Based Composite Flame Effect",
       description: "A WebGL implementation of a fire effect using fragment shaders. Simulates flame dynamics with customizable parameters for an interactive experience.",
       tech: ["WebGL", "GLSL", "JavaScript", "AI"],
       thumbnail: `${basePath}/flame-shader.png`,
