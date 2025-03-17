@@ -14,7 +14,7 @@ export default function Home() {
       link: "https://cunya.github.io/StarWarsScroller/"
     },
     {
-      name: "Retro Rasterbars",
+      name: "Rasterbars",
       description: "A tribute to classic demoscene effects featuring animated color bars. Implements the visual technique using modern web technologies while maintaining the nostalgic aesthetic.",
       tech: ["Canvas", "JavaScript", "WebGL", "AI"],
       thumbnail: `${basePath}/rasterbars.png`,
