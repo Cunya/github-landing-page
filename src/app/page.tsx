@@ -47,7 +47,7 @@ export default function Home() {
             LLM Assisted Programming Projects Collection
           </h1>
           <p className="text-xl text-lavender-blush max-w-2xl mx-auto drop-shadow">
-            A selection of classic demo effects implemented with modern web technologies and AI assistance
+            A selection of projects implemented with modern web technologies and AI assistance
           </p>
           <p className="text-md text-lavender-blush/80 mt-4">
             Created by Tamás Martinec
