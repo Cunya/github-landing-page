@@ -33,6 +33,13 @@ export default function Home() {
       tech: ["Three.js", "JavaScript", "CSS", "AI"],
       thumbnail: `${basePath}/3d-text-scroll.png`,
       link: "https://cunya.github.io/3d-text-scroll/"
+    },
+    {
+      name: "Powerup Tron",
+      description: "A modern take on the classic Snake game, inspired by the Tron aesthetic. Features glowing trails and competitive gameplay.",
+      tech: ["React", "Canvas", "TypeScript", "AI"],
+      thumbnail: `${basePath}/Tron.png`,
+      link: "https://cunya.github.io/TronSnake-Cursor-Gemini-2.5-Exp/"
     }
   ];
 
